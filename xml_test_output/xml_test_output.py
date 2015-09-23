@@ -1,4 +1,3 @@
-from openerp.modules.module import run_unit_tests
 from openerp.modules.module import get_test_modules
 from openerp.modules.module import runs_at_install
 from openerp.modules.module import unwrap_suite
@@ -11,6 +10,7 @@ import itertools
 import openerp
 import xmlrunner
 _logger = logging.getLogger('openerp.tests')
+
 
 def run_unit_tests(module_name, dbname, position=runs_at_install):
     """
@@ -31,15 +31,24 @@ def run_unit_tests(module_name, dbname, position=runs_at_install):
             t0 = time.time()
             t0_sql = openerp.sql_db.sql_counter
             _logger.info('%s running tests.', m.__name__)
-            # result = unittest2.TextTestRunner(verbosity=2, stream=TestStream(m.__name__)).run(suite)
-            result = xmlrunner.XMLTestRunner(verbosity=2, stream=TestStream(m.__name__), output='tests').run(suite)
+            # result = unittest2.TextTestRunner(verbosity=2,
+            # stream=TestStream(m.__name__)).run(suite)
+            result = xmlrunner.XMLTestRunner(verbosity=2,
+                                             stream=TestStream(m.__name__),
+                                             output='tests').run(suite)
             if time.time() - t0 > 5:
-                _logger.log(25, "%s tested in %.2fs, %s queries", m.__name__, time.time() - t0, openerp.sql_db.sql_counter - t0_sql)
+                _logger.log(25, "%s tested in %.2fs, %s queries", m.__name__,
+                            time.time() - t0,
+                            openerp.sql_db.sql_counter - t0_sql)
             if not result.wasSuccessful():
                 r = False
-                _logger.error("Module %s: %d failures, %d errors", module_name, len(result.failures), len(result.errors))
+                _logger.error("Module %s: %d failures, %d errors",
+                              module_name,
+                              len(result.failures),
+                              len(result.errors))
 
     current_test = None
     threading.currentThread().testing = False
+    return r
 
 openerp.modules.module.run_unit_tests = run_unit_tests
