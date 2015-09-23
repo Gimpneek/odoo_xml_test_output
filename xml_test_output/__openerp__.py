@@ -1,0 +1,20 @@
+# -*- encoding: utf-8 -*-
+{
+    'name': 'XML Test Output',
+    'version': '0.1',
+    'category': 'Tests',
+    'license': 'AGPL-3',
+    'summary': '',
+    'description': """ Modify the test runner to output stuff in XML format via XMLTestRunner""",
+    'author': 'Colin Wren',
+    'website': 'http://colinwren.is/awesome',
+    'depends': [],
+    'data': [],
+    'css': [],
+    'js': [],
+    'qweb': [],
+    'images': [],
+    'application': True,
+    'installable': True,
+    'active': True,
+}
