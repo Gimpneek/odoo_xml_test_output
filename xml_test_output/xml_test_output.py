@@ -11,7 +11,6 @@ import openerp
 import xmlrunner
 _logger = logging.getLogger('openerp.tests')
 
-
 def run_unit_tests(module_name, dbname, position=runs_at_install):
     """
     :returns: ``True`` if all of ``module_name``'s tests succeeded, ``False``
@@ -21,6 +20,8 @@ def run_unit_tests(module_name, dbname, position=runs_at_install):
     global current_test
     current_test = module_name
     mods = get_test_modules(module_name)
+    config_dir = openerp.tools.config.options['test_report_directory']
+    output_dir = config_dir if config_dir else 'tests'
     threading.currentThread().testing = True
     r = True
     for m in mods:
@@ -35,7 +36,7 @@ def run_unit_tests(module_name, dbname, position=runs_at_install):
             # stream=TestStream(m.__name__)).run(suite)
             result = xmlrunner.XMLTestRunner(verbosity=2,
                                              stream=TestStream(m.__name__),
-                                             output='tests').run(suite)
+                                             output=output_dir).run(suite)
             if time.time() - t0 > 5:
                 _logger.log(25, "%s tested in %.2fs, %s queries", m.__name__,
                             time.time() - t0,
