@@ -9,6 +9,7 @@ import threading
 import itertools
 import openerp
 import xmlrunner
+import os
 _logger = logging.getLogger('openerp.tests')
 
 def run_unit_tests(module_name, dbname, position=runs_at_install):
@@ -20,8 +21,12 @@ def run_unit_tests(module_name, dbname, position=runs_at_install):
     global current_test
     current_test = module_name
     mods = get_test_modules(module_name)
-    config_dir = openerp.tools.config.options['test_report_directory']
-    output_dir = config_dir if config_dir else 'tests'
+    config_dir = openerp.tools.config.options.get('test_report_directory', False)
+    output_dir = 'tests'
+    if config_dir:
+        output_dir = config_dir
+    elif os.environ.get('TRAVIS', False) and os.environ.get('HOME', False):
+        output_dir = os.path.join(os.environ.get('HOME', '~/'), 'tests')
     threading.currentThread().testing = True
     r = True
     for m in mods:
